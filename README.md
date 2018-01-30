@@ -17,7 +17,7 @@ You can install ruby using instructions found at the following sites:
 
 Concepts we will explore as a part of this Lab:
 * Regular Expression -> See this [tutorial](https://regexone.com/) and this [too](http://regexpal.com/)
-* Ruby -> See this [tutorial](https://CSCI305.github.io/tutorials/ruby_tutorial.pdf)
+* Ruby -> See this [tutorial](https://www.tutorialspoint.com/ruby/)
 * Procedural Languages
 
 # *Step -1:* Fork and Clone this Repository
@@ -26,6 +26,10 @@ Concepts we will explore as a part of this Lab:
 3. Once you have the repository cloned, you can continue on.
 
 # *Step 0:* Getting everything ready
+You will need to install RSpec in order to run the tests for self checks as well as to answer several questions.
+This can be done in one of the following ways:
+
+The first method is to install bundler and use this to install rspec:
 1. Install Bundler
   ```
   gem install bundler
@@ -33,6 +37,12 @@ Concepts we will explore as a part of this Lab:
 2. Install project dependencies (from the project root directory)
   ```
   bundler install --binstubs
+  ```
+
+The second method is to just install RSpec straight up:
+1. Open a terminal/command line and execute the following command:
+  ```
+  gem install rspec
   ```
 
 # Dataset
