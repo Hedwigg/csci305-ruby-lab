@@ -13,34 +13,51 @@ $bigrams = Hash.new # The Bigram data structure
 $name = "Joel Lechman"
 
 def cleanup_title(string)
-patternSet1 = /<SEP>\w*<SEP>\w*<SEP>|<SEP>\w*<SEP>\w* \w*<SEP>|<SEP>\w*<SEP>\w* \w* \w*<SEP>|<SEP>\w*<SEP>\w* \w* \w* \w*<SEP>|<SEP>\w*<SEP>\w* \w* \w* \w* \w*<SEP>/
-patternSet2 = /<SEP>\w*<SEP>\w*<SEP>|<SEP>\w*<SEP>\w*.* \w*<SEP>|<SEP>\w*<SEP>\w*.* \w*.* \w*<SEP>|<SEP>\w*<SEP>\w*.* \w*.* \w*.* \w*<SEP>|<SEP>\w*<SEP>\w*.* \w*.* \w*.* \w*.* \w*<SEP>/
-patternSet3 = /<SEP>\w*<SEP>\w* .* \w* <SEP>|<SEP>\w*<SEP>.*\w* \w*.*<SEP>|<SEP>\w*<SEP>\w*.*<SEP>|<SEP>\w*<SEP>.*\w* .* \w* .* \w*.*<SEP>/
-#pattern = /.*>(.*)/
+	#pattern = /<SEP>[\w\s]*$/s
 
-if string =~ patternSet1
-	title = "#{$'}"
-	return title
-elsif string =~ patternSet2
-	title = "#{$'}"
-	return title
-elsif string =~ patternSet3
-	title = "#{$'}"
+	pattern = /<SEP>[\w\s]*$|<SEP>[\w.\s\w]*$/
+
+	if string =~ pattern
+		titleWithSEP = "#{$&}"
+	end
+	sepPattern = /<SEP>/
+	if titleWithSEP =~ sepPattern
+		title = "#{$'}"
+	end
 	return title
 end
-else
-	puts string
+
+
+#pre-process to eliminate superfluous text (STEP 2)
+def pre_process(string)
+	#symbols that need whats inbetween them removed
+	# () [] {} ""
+	inBetweenPatterns = /\([\w\s.*]*\)|\[[\w\s\*]*\]|\{[\w\s\*]*\}|\"[\w\s\*]*\"/
+	if string =~ inBetweenPatterns
+		newString = string.gsub(inBetweenPatterns, "")
+	end
+
+
+	#symbols that need the full word containing them removed? or everthing after?
+	# # _ / \ - : = * ` (the tilda left single quote)
+	otherPatterns = /\#\w*|\#\s*|\#.*/
+	#CAN THIS JUST BE /\#/???????
+
+	#patterns that need themselves and everything after removed
+	# feat. ft.
+	featPatterns = //
 end
+
+
 
 # function to process each line of a file and extract the song titles
 def process_file(file_name)
 	puts "Processing File.... "
-
 	begin
-		#IO.foreach(file_name) do |line|
 		IO.foreach(file_name, encoding: "utf-8") do |line|
-			# do something for each line
 			title = cleanup_title(line)
+			puts "---"
+			puts line
 			puts title
 		end
 
