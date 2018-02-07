@@ -4,19 +4,26 @@
 #
 # CSCI 305 - Ruby Programming Lab
 #
-# Joel Lechman
-# joel1500@bresnan.net
+# <firstname> <lastname>
+# <email-address>
 #
 ###############################################################
 
 $bigrams = Hash.new # The Bigram data structure
 $name = "Joel Lechman"
 
+#takes a single string, returns a cleaned up string for further processing
 def cleanup_title(string)
-	#pattern = /<SEP>[\w\s]*$/s
+	#for patterns that go word word (word word)       <SEP>[\w\s]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w\s]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]$
+	#[\w\s]*  = any # of full words
+	#[-!$%^&*()_+|~=`{}\[\]:";'?,.\/] = character class
 
-	pattern = /<SEP>[\w\s]*$|<SEP>[\w.\s\w]*$/
+	#pattern = /<SEP>[\w\s]*$|<SEP>[\w.\s\w]*$|<SEP>\w*.\w*\s*[\w*\s]*$|<SEP>[\w\s]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w\s]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]$|<SEP>[\w\s]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w\s]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*\s*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w\s]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*$/
+	#everything and titles with one (multiple words)
 
+	pattern = /<SEP>[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*$[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*/
+
+	#grab title
 	if string =~ pattern
 		titleWithSEP = "#{$&}"
 	end
@@ -24,41 +31,34 @@ def cleanup_title(string)
 	if titleWithSEP =~ sepPattern
 		title = "#{$'}"
 	end
+
+	#cleanup said title part 2
+	pat1 = /[(\{\/_:"`+=*]/
+	pat2 = /\|\[|\-/
+	#feat and [ -
+	if title =~ pat1
+		title = "#{$`}"
+	end
+	if title =~ pat2
+		title = "#{$`}"
+	end
+
+	#eliminate characters part 3
+
+	puts "---"
+	puts string
+	puts title
 	return title
 end
 
-
-#pre-process to eliminate superfluous text (STEP 2)
-def pre_process(string)
-	#symbols that need whats inbetween them removed
-	# () [] {} ""
-	inBetweenPatterns = /\([\w\s.*]*\)|\[[\w\s\*]*\]|\{[\w\s\*]*\}|\"[\w\s\*]*\"/
-	if string =~ inBetweenPatterns
-		newString = string.gsub(inBetweenPatterns, "")
-	end
-
-
-	#symbols that need the full word containing them removed? or everthing after?
-	# # _ / \ - : = * ` (the tilda left single quote)
-	otherPatterns = /\#\w*|\#\s*|\#.*/
-	#CAN THIS JUST BE /\#/???????
-
-	#patterns that need themselves and everything after removed
-	# feat. ft.
-	featPatterns = //
-end
-
-
-
-# function to process each line of a file and extract the song titles
+#function to process each line of a file and extract the song titles
 def process_file(file_name)
 	puts "Processing File.... "
+
 	begin
 		IO.foreach(file_name, encoding: "utf-8") do |line|
-			title = cleanup_title(line)
-			puts "---"
-			puts line
-			puts title
+			# do something for each line
+			cleanup_title(line)
 		end
 
 		puts "Finished. Bigram model built.\n"
