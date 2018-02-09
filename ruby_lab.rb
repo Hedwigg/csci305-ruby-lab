@@ -15,23 +15,23 @@ $name = "Joel Lechman"
 #takes a single string, returns a cleaned up string for further processing
 def cleanup_title(string)
 	pattern =
-	/<SEP>[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*$[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*|<SEP>[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/][\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/][\w*\s*]*/
+	/<SEP>[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*$[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*|<SEP>[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/][\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/][\w*\s*]*|<SEP>[\w\s]*$/
 	title = ""
 
-	#grab title (only grabs english titles)
+	#grab title (only grabs english titles ex ignores titles with letter accents in them)
 	if string =~ pattern
 		titleWithSEP = "#{$&}"
 	end
 	sepPattern = /<SEP>/
-	if titleWithSEP =~ sepPattern	#Remove Preceding <SEP>
+	if titleWithSEP =~ sepPattern	#Remove Preceding <SEP> to end up with just the title
 		title = "#{$'}"
 	end
 
 	#cleanup said title part 2
+	#pat1-3 are regular expressions identifying superflous text as stated in the instructions
 	pat1 = /[(\{\/:"`+=*]/
 	pat2 = /\|\[\-/
 	pat3 = /feat.|\[|\-/
-
 	#if the title contains any superfluous text, we just want whatever comes before said text (#{$`})
 	if title =~ pat1
 		title = "#{$`}"
@@ -53,11 +53,23 @@ def cleanup_title(string)
 	#set to lower case part 5
 	title.downcase!
 
-	#puts "---"
-	#puts string
-	#puts title
+	#debug lines (remove)
+	puts "---"
+	puts string
+	puts title
+
 	return title
 end
+
+
+#construct_Bi_grams method takes in a song title, splits it into individual words and creates bi-grams for the words
+# => https://snippets.aktagon.com/snippets/584-generating-word-n-grams-with-ruby
+# => https://www.sitepoint.com/natural-language-processing-ruby-n-grams/
+# => http://www.rubyguides.com/2015/09/ngram-analysis-ruby/
+def construct_Bi_grams(title)
+
+end
+
 
 #function to process each line of a file and extract the song titles
 def process_file(file_name)
@@ -66,7 +78,8 @@ def process_file(file_name)
 	begin
 		IO.foreach(file_name, encoding: "utf-8") do |line|
 			# do something for each line
-			cleanup_title(line)
+			title = cleanup_title(line)
+			construct_Bi_grams(title)
 		end
 
 		puts "Finished. Bigram model built.\n"
