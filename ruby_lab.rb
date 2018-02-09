@@ -4,8 +4,8 @@
 #
 # CSCI 305 - Ruby Programming Lab
 #
-# <firstname> <lastname>
-# <email-address>
+# Joel Lehman
+# joel1500@bresnan.net
 #
 ###############################################################
 
@@ -14,40 +14,48 @@ $name = "Joel Lechman"
 
 #takes a single string, returns a cleaned up string for further processing
 def cleanup_title(string)
-	#for patterns that go word word (word word)       <SEP>[\w\s]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w\s]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]$
-	#[\w\s]*  = any # of full words
-	#[-!$%^&*()_+|~=`{}\[\]:";'?,.\/] = character class
+	pattern =
+	/<SEP>[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*$[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*|<SEP>[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/][\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/][\w*\s*]*/
+	title = ""
 
-	#pattern = /<SEP>[\w\s]*$|<SEP>[\w.\s\w]*$|<SEP>\w*.\w*\s*[\w*\s]*$|<SEP>[\w\s]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w\s]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]$|<SEP>[\w\s]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w\s]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*\s*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w\s]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*$/
-	#everything and titles with one (multiple words)
-
-	pattern = /<SEP>[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*$[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*/
-
-	#grab title
+	#grab title (only grabs english titles)
 	if string =~ pattern
 		titleWithSEP = "#{$&}"
 	end
 	sepPattern = /<SEP>/
-	if titleWithSEP =~ sepPattern
+	if titleWithSEP =~ sepPattern	#Remove Preceding <SEP>
 		title = "#{$'}"
 	end
 
 	#cleanup said title part 2
-	pat1 = /[(\{\/_:"`+=*]/
-	pat2 = /\|\[|\-/
-	#feat and [ -
+	pat1 = /[(\{\/:"`+=*]/
+	pat2 = /\|\[\-/
+	pat3 = /feat.|\[|\-/
+
+	#if the title contains any superfluous text, we just want whatever comes before said text (#{$`})
 	if title =~ pat1
 		title = "#{$`}"
 	end
 	if title =~ pat2
 		title = "#{$`}"
 	end
+	if title =~ pat3
+		title = "#{$`}"
+	end
 
 	#eliminate characters part 3
+	#finding and deleting the following punctuation: ?  ¿  !  ¡  .  ;  &  @  %  #  |
+	punctuation = /[?¿!¡.;&@%#|]/
+	if title =~ punctuation
+		title.gsub!(punctuation, "") #replace with empty string to remove
+	end
 
-	puts "---"
-	puts string
-	puts title
+	#set to lower case part 5
+	title.downcase!
+
+	#puts "---"
+	#puts string
+	#puts title
 	return title
 end
 
