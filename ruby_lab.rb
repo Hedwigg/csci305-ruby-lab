@@ -62,11 +62,11 @@ def cleanup_title(string)
 end
 
 
-#construct_Bi_grams method takes in a song title, splits it into individual words and creates bi-grams for the words
-# => https://snippets.aktagon.com/snippets/584-generating-word-n-grams-with-ruby
-# => https://www.sitepoint.com/natural-language-processing-ruby-n-grams/
-# => http://www.rubyguides.com/2015/09/ngram-analysis-ruby/
-def construct_Bi_grams(title)
+#construct_Bi_grams method takes in a song title, creates bi-grams for the words
+#use each_cons method define in the Enumerable module, returns an arry of bigrams for the inputted title
+def construct_Bi_gram(title)
+	b_gram = title.split(' ').each_cons(2).to_a
+	return b_gram
 
 end
 
@@ -74,12 +74,42 @@ end
 #function to process each line of a file and extract the song titles
 def process_file(file_name)
 	puts "Processing File.... "
+	#empty hash table used for storing bigrams (all initial values = 0)
+	hash = Hash.new(0)
 
 	begin
-		IO.foreach(file_name, encoding: "utf-8") do |line|
-			# do something for each line
-			title = cleanup_title(line)
-			construct_Bi_grams(title)
+		if RUBY_PLATFORM.downcase.include? 'mswin'
+			file = File.open(file_name)
+			unless file.eof?
+				file.each_line do |line|
+					# do something for each line (if using windows)
+					title = cleanup_title(line)
+					construct_Bi_gram(title)
+				end
+			end
+			file.close
+		else
+			IO.foreach(file_name, encoding: "utf-8") do |line|
+				# do something for each line (if using macos or linux)
+				title = cleanup_title(line)
+				bi_grams = construct_Bi_gram(title)
+
+				#for each element in the array of bi_grams
+				bi_grams.each do |a|
+					puts"---"
+					puts a
+					#if the key exists, increment
+					#if #hash.key(bigram)
+						#puts "hash contains key"
+					#else #else add the key
+						#hash[<key>] = value
+						#puts "nokey"
+					#end
+				end
+				#debug lines
+				#puts "hash length"
+				#puts hash.length
+			end
 		end
 
 		puts "Finished. Bigram model built.\n"
