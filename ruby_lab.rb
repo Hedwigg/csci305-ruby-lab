@@ -14,16 +14,17 @@ $name = "Joel Lechman"
 
 #takes a single string, returns a cleaned up string for further processing
 def cleanup_title(string)
-	pattern =
-	/<SEP>[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*$[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*|<SEP>[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/][\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/]*[\w*\s*]*[-!$%^&*()_+|~=`{}\[\]:";'?,.\/][\w*\s*]*|<SEP>[\w\s]*$/
 	title = ""
-
-	#grab title (only grabs english titles ex ignores titles with letter accents in them)
-	if string =~ pattern
-		titleWithSEP = "#{$&}"
+	#looking for the third <SEP> by looking for the <SEP> pattern 3 times, each time setting the new title to everything to the right of the pattern.
+	#this effectively extracts just the song title from the line
+	sep_pattern = /<SEP>/
+	if string =~ sep_pattern
+		title = "#{$'}"
 	end
-	sepPattern = /<SEP>/
-	if titleWithSEP =~ sepPattern	#Remove Preceding <SEP> to end up with just the title
+	if title =~ sep_pattern
+		title = "#{$'}"
+	end
+	if title =~ sep_pattern
 		title = "#{$'}"
 	end
 
@@ -45,7 +46,7 @@ def cleanup_title(string)
 
 	#eliminate characters part 3
 	#finding and deleting the following punctuation: ?  ¿  !  ¡  .  ;  &  @  %  #  |
-	punctuation = /[?¿!¡.;&@%#|]/
+	punctuation = /[?¿!¡.;&@%#|_]/
 	if title =~ punctuation
 		title.gsub!(punctuation, "") #replace with empty string to remove
 	end
@@ -53,10 +54,6 @@ def cleanup_title(string)
 	#set to lower case part 5
 	title.downcase!
 
-	#debug lines (remove)
-	puts "---"
-	puts string
-	puts title
 
 	return title
 end
@@ -83,8 +80,6 @@ def process_file(file_name)
 			unless file.eof?
 				file.each_line do |line|
 					# do something for each line (if using windows)
-					title = cleanup_title(line)
-					construct_Bi_gram(title)
 				end
 			end
 			file.close
@@ -94,10 +89,12 @@ def process_file(file_name)
 				title = cleanup_title(line)
 				bi_grams = construct_Bi_gram(title)
 
-				#for each element in the array of bi_grams
-				bi_grams.each do |a|
-					puts"---"
-					puts a
+				 bi_grams.each do |a|
+				 	puts"___"
+				 	puts a[0]
+				 	puts a[1]
+					puts"-"
+					puts a.inspect
 					#if the key exists, increment
 					#if #hash.key(bigram)
 						#puts "hash contains key"
