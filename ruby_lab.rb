@@ -29,18 +29,10 @@ def cleanup_title(string)
 	end
 
 	#cleanup said title part 2
-	#pat1-3 are regular expressions identifying superflous text as stated in the instructions
-	pat1 = /[(\{\/:"`+=*]/
-	pat2 = /\|\[\-/
-	pat3 = /feat.|\[|\-/
-	#if the title contains any superfluous text, we just want whatever comes before said text (#{$`})
-	if title =~ pat1
-		title = "#{$`}"
-	end
-	if title =~ pat2
-		title = "#{$`}"
-	end
-	if title =~ pat3
+	#pat1 are regular expressions identifying superflous text as stated in the instructions
+	part2 = /[(\{\/:"`+=*]|feat.|\[|\-/
+	#if the title contains any superfluous text, we just want whatever comes before said text using: (#{$`})
+	if title =~ part2
 		title = "#{$`}"
 	end
 
