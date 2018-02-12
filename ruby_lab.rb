@@ -30,7 +30,7 @@ def cleanup_title(string)
 
 	#cleanup said title part 2
 	#pat1 are regular expressions identifying superflous text as stated in the instructions
-	part2 = /[(\{\/:"`+=*]|feat.|\[|\-/
+	part2 = /[(\[\{\/:"`+\-_=*\\]|feat./
 	#if the title contains any superfluous text, we just want whatever comes before said text using: (#{$`})
 	if title =~ part2
 		title = "#{$`}"
@@ -38,33 +38,47 @@ def cleanup_title(string)
 
 	#eliminate characters part 3
 	#finding and deleting the following punctuation: ?  ¿  !  ¡  .  ;  &  @  %  #  |
-	punctuation = /[?¿!¡.;&@%#|_]/
+	punctuation = /[?¿!¡.;&@%#|]/
 	if title =~ punctuation
 		title.gsub!(punctuation, "") #replace with empty string to remove
 	end
 
 	#set to lower case part 5
 	title.downcase!
-
-
 	return title
 end
 
-
-#construct_Bi_grams method takes in a song title, creates bi-grams for the words
-#use each_cons method define in the Enumerable module, returns an arry of bigrams for the inputted title
-def construct_Bi_gram(title)
-	b_gram = title.split(' ').each_cons(2).to_a
-	return b_gram
-
+#function that takes a title and creates bigrams for the words in title.
+def construct_bigram(title)
+	title_array = title.split #split the title by words. (splits by spaces by default)
+	for i in 0..title_array.length-2
+		$bigrams[title_array[i]]
+		if $bigrams[title_array[i]] == nil #when the key/second hash does not exist, create a new one and initialize to 0 so we can increment
+			$bigrams[title_array[i]] = Hash.new(0)
+		end
+		#increment value for the key by one
+		$bigrams[title_array[i]][title_array[i+1]] += 1
+	end
 end
 
+
+#Function to find the most_common key/word that follows the passed in word. returns the most common word/key
+#most common is defined by the value of the hash key.
+def mcw(word)
+	highest_value = 0	 	#variable to keep track of what the highest value currently is.
+	most_common_key = "" #most common key
+	$bigrams[word].each do |key, value|
+		if value > highest_value	#if current value is higher, set highest to said value
+			highest_value = value
+			most_common_key = key	#update most common key (mcw)
+		end
+	end
+	return most_common_key
+end
 
 #function to process each line of a file and extract the song titles
 def process_file(file_name)
 	puts "Processing File.... "
-	#empty hash table used for storing bigrams (all initial values = 0)
-	hash = Hash.new(0)
 
 	begin
 		if RUBY_PLATFORM.downcase.include? 'mswin'
@@ -79,25 +93,7 @@ def process_file(file_name)
 			IO.foreach(file_name, encoding: "utf-8") do |line|
 				# do something for each line (if using macos or linux)
 				title = cleanup_title(line)
-				bi_grams = construct_Bi_gram(title)
-
-				 bi_grams.each do |a|
-				 	puts"___"
-				 	puts a[0]
-				 	puts a[1]
-					puts"-"
-					puts a.inspect
-					#if the key exists, increment
-					#if #hash.key(bigram)
-						#puts "hash contains key"
-					#else #else add the key
-						#hash[<key>] = value
-						#puts "nokey"
-					#end
-				end
-				#debug lines
-				#puts "hash length"
-				#puts hash.length
+				construct_bigram(title)
 			end
 		end
 
