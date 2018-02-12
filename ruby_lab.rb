@@ -64,16 +64,37 @@ end
 
 #Function to find the most_common key/word that follows the passed in word. returns the most common word/key
 #most common is defined by the value of the hash key.
-def mcw(word)
+def mcw(keyWord)
+	puts keyWord.class
 	highest_value = 0	 	#variable to keep track of what the highest value currently is.
 	most_common_key = "" #most common key
-	$bigrams[word].each do |key, value|
+	$bigrams[keyWord].each do |key, value|
 		if value > highest_value	#if current value is higher, set highest to said value
-			highest_value = value
+			highest_value = value	#update the highest value
 			most_common_key = key	#update most common key (mcw)
 		end
 	end
 	return most_common_key
+end
+
+#produces the most probably title based on the most common key/word that follows the previous word.
+def createTitle(startingWord)
+	finalTitle = startingWord
+	length = 0
+	previous = startingWord
+
+	while length < 20	#maximum of 20 words
+		current = mcw(previous)	#getting the next word in the sequence
+		if (current != "" && current != nil)	#while the next string has another word after it
+			length += 1
+			finalTitle <<" "	#catonate a space
+			finalTitle << current	#catonate the current word
+			previous = current	#reset for previous
+		else
+			length = 20	#there wasnt a next word
+		end
+	end
+	return finalTitle
 end
 
 #function to process each line of a file and extract the song titles
@@ -116,7 +137,14 @@ def main_loop()
 	# process the file
 	process_file(ARGV[0])
 
+
 	# Get user input
+	input = ""
+	while input != "q"
+		puts "Enter a word [Enter 'q' to quit]:"
+		input = gets.to_s
+		puts "createTitle(input)"
+	end
 end
 
 if __FILE__==$0
