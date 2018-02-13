@@ -1,24 +1,36 @@
-Your name
+Joel Lechman
 CSCI-305
 
-10.
+10. The main problem that I see is that after a couple of words. Titles tend to repeat parts of themselves until they get to twenty words in length.
+    The most common phrases are: "of the" and "for you"
 
-14.
+14. So many of the titles devolve into repeating patterns because stop words all have high frequencies in the English language because they are very common
+    So when we have many strings from the English language (ex a bunch of song titles) we are going to have a high frequency of stop words.
 
-15.
+15. Using the string "it" generated a title of word-length 5: "it goes down low fidelity" (THIS WAS IN A_TRACKS) i couldnt find one in the unique_tracks file
 
-16.
+16. I fixed the repeating phrase/word problem by keeping track of what words were already in the title when it is being built in create_title. By keeping track
+    of the words that I already used, I could check each word before I add it to the title. Therefore I simply checked to see if the word was already in the title.
+    If it was in the title. I broke out of create_title effectively stopping the title creation wherever it was at. Overall its just a simple check for any word repetition at all.
 
-19.
+17. montana (for both a_tracks and unique_tracks)
 
-20.
+18. bob long as i want is you ready love (a_tracks.txt) bob mcgee me down road blues night long way you are (unique_tracks.txt)
 
-21.
+19. No I did not get the same title because when finding the most common word, if there is a tie in the frequency of the next word, one of the two is picked at random resulting
+    in different possible titles for the same input string.
 
-22.
+20. If you use the string "dead" you get: "dead yet triumphant intermissi" which sounds like a sweet band name to me.
 
-23.
+21. I really like Ruby's exception handling. It seems to me from my experience with it so far that the begin - rescue block has a lot of potential and could come in handy in
+    a lot of situations. I used it to debug my code for this project many times.
 
-24.
+22. I dislike reading example code (or just code written by others in general) because it is hard to follow what types variables have due to the fact that you don't need to
+    type a variable before using it.
 
-25.
+23. Overall I am indifferent about this lab. I think it taught us some very valuable regex and ruby skills. But it seemed extremely long and debugging was a nightmare because
+    of the inherent rescue block that was part of the start code. Every time you made a syntax mistake it only gave you the "could not open file" error.
+
+24. >12 hours total...
+
+25. I do think I will use ruby again. Most likely for projects that require text processing because of the practice I have received with regular expressions and string manipulation.
